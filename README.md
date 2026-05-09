@@ -1,5 +1,7 @@
 # VaultID V2
 
+**Live URL:** https://bafybeifhmk2tf4bcmwyipjk6ngsn4m673uhrt24acvuxcnkqjy5ewaqcqa.ipfs.community.bgipfs.com/
+
 A premium personal vault product for encrypted life organization — passes, receipts, memories, warranties, medical records, recovery notes — backed by soulbound ownership on Base.
 
 Files stay encrypted client-side. Only opt-in organizational metadata (title, category, icon, description) is public. Designed to feel like a consumer privacy product (Notion × 1Password), not an NFT dApp.

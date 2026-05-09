@@ -1,83 +1,62 @@
-# 🏗 Scaffold-ETH 2
+# VaultID V2
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+A premium personal vault product for encrypted life organization — passes, receipts, memories, warranties, medical records, recovery notes — backed by soulbound ownership on Base.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+Files stay encrypted client-side. Only opt-in organizational metadata (title, category, icon, description) is public. Designed to feel like a consumer privacy product (Notion × 1Password), not an NFT dApp.
 
-> [!NOTE]
-> 🤖 Scaffold-ETH 2 is AI-ready! It has everything agents need to build on Ethereum. Check `.agents/`, `.claude/`, `.opencode` or `.cursor/` for more info.
+## Live Deployment
 
-⚙️ Built using NextJS, RainbowKit, Foundry, Wagmi, Viem, and Typescript.
+Deployed on Base (chain ID 8453). Frontend hosted on IPFS via bgipfs.
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+## Smart Contracts
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+| Contract | Address | Basescan |
+|----------|---------|---------|
+| VaultIDV2 | `0xe03ae28c814058fa0747b3644f8e1e4314cd7eb0` | [View on Basescan](https://basescan.org/address/0xe03ae28c814058fa0747b3644f8e1e4314cd7eb0) |
+| CLAWD Token | `0x9f86dB9fc6f7c9408e8Fda3Ff8ce4e78ac7a6b07` | [View on Basescan](https://basescan.org/address/0x9f86dB9fc6f7c9408e8Fda3Ff8ce4e78ac7a6b07) |
 
-## Requirements
+### Contract architecture
 
-Before you begin, you need to install the following tools:
+- **VaultIDV2.sol** — soulbound ERC-721 (ERC-5192) with dual-token mint fees (CLAWD or CV), optional recovery wallet, soft-burn, expiry extension, and on-chain SVG tokenURI.
+- Mint cost: 100,000 CLAWD or 1,000,000 CV tokens
+- Ownership: `0xfe968de21eb0e77d5877477c31a04a3075c0086e` (pending `acceptOwnership()`)
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+## Client actions required after deployment
 
-## Quickstart
+1. **Call `acceptOwnership()`** on VaultIDV2 to complete the Ownable2Step transfer.
+2. **Call `setFeeRecipient(address)`** to set your desired fee collection address.
+3. **Call `setCvToken(address)`** if you want to enable CV token minting.
+4. **Configure the Cloudflare Worker**: set `NEXT_PUBLIC_UPLOAD_WORKER_URL` to your Worker endpoint.
 
-To get started with Scaffold-ETH 2, follow the steps below:
+## Frontend pages
 
-1. Install dependencies if it was skipped in CLI:
+- `/` — Homepage with hero, value props, category showcase, how-it-works
+- `/create` — Multi-step vault creation with client-side AES-256-GCM encryption
+- `/vault` — Library of your vaults, filterable by category
+- `/vault/view?id=N` — Full vault view with encrypted unlock
+- `/verify?id=N` — Public certificate page (no wallet required)
 
-```
-cd my-dapp-example
+## Running Locally
+
+```bash
 yarn install
-```
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Foundry. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/foundry/foundry.toml`.
-
-3. On a second terminal, deploy the test contract:
-
-```
+yarn fork --network base
 yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/foundry/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/foundry/script` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+## Environment Variables
 
-Run smart contract test with `yarn foundry:test`
+```
+NEXT_PUBLIC_UPLOAD_WORKER_URL=https://your-worker.workers.dev    # REQUIRED for /create
+NEXT_PUBLIC_ALCHEMY_API_KEY=...                                  # optional, for RPC
+NEXT_PUBLIC_PRODUCTION_URL=https://<CID>.ipfs.community.bgipfs.com  # set before IPFS rebuild
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=...                        # optional
+```
 
-- Edit your smart contracts in `packages/foundry/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/foundry/script`
+## Security
 
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+- Content encrypted client-side with AES-256-GCM before upload
+- Soulbound: all transfer/approval functions revert with `SoulboundLocked`
+- If you lose both wallet and recovery key, encrypted vault contents may be unrecoverable
+- `encryptedContentURI` on-chain stores IPFS CID; tampering changes CID and breaks decryption

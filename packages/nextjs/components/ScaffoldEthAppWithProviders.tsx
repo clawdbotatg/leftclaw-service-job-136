@@ -43,13 +43,13 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
   }, []);
 
   // Avoid initializing wagmi/RainbowKit during the static prerender pass.
-  // Some downstream connector code throws on `Cannot read properties of
-  // undefined (reading 'data')` when there's no real browser context. Once
-  // the client mounts, the full provider tree renders.
+  // Without WagmiProvider, any wagmi hook in `children` will throw and break
+  // the static export (e.g. WagmiProviderNotFoundError on /vault). Render a
+  // minimal placeholder until the client mounts, then mount the full tree.
   if (!mounted) {
     return (
       <div className="flex flex-col min-h-screen">
-        <main className="relative flex flex-col flex-1">{children}</main>
+        <main className="relative flex flex-col flex-1" />
       </div>
     );
   }
